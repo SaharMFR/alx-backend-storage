@@ -9,12 +9,27 @@ from functools import wraps
 
 def count_calls(method: Callable) -> Callable:
     """ Counts how many times methods of the `Cach`e class are called """
-    key = method.__qualname__
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         """ wrapper """
+        key = method.__qualname__
         self._redis.incr(key)
         return method(self, *args, **kwargs)
+    return wrapper
+
+
+def call_history(method: Callable) -> Callable:
+    """ Calls history """
+    @wraps(method)
+    def wrapper(self, *args, **kargs):
+        """ wrapper """
+        key = method.__qualname__
+        inputs = key + ":inputs"
+        outputs = key + ":outputs"
+        self._redis.rpush(inputs, str(args))
+        data = method(self, *args, **kargs)
+        self._redis.rpush(outputs, str(data))
+        return data
     return wrapper
 
 
