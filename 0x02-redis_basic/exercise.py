@@ -40,13 +40,7 @@ def replay(function: Callable):
     inputs = r.lrange(key + ":inputs", 0, -1)
     outputs = r.lrange(key + ":outputs", 0, -1)
     nCalls = len(inputs)
-
-    times = "times"
-    if nCalls == 1:
-        times = "time"
-
-    fun_str = key + " was called " + nCalls + " " + times + ":"
-    print(fun_str)
+    print(key, "was called", nCalls, "times:")
     for k, v in zip(inputs, outputs):
         print("{}(*{}) -> {}".format(key, k.decode("utf-8"),
                                      v.decode("utf-8")))
