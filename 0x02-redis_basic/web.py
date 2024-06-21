@@ -17,7 +17,7 @@ def data_cacher(method: Callable) -> Callable:
         redis_store.incr(f"count:{url}")
         res = redis_store.get(f"cached:{url}")
         if res:
-            return res.decode("utf-8")
+            return res.decode('utf-8')
         html = method(url)
         redis_store.setex(f"cached:{url}", 10, html)
         return html
@@ -31,4 +31,5 @@ def get_page(url: str) -> str:
     Returns the content of a URL after caching the request's response
     and tracking the request.
     """
-    return requests.get(url).text
+    request = requests.get(url)
+    return request.text
